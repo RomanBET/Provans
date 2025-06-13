@@ -214,11 +214,18 @@ async def save_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("📭 Історія не знайдена.")
 
+import os
 import asyncio
+from telegram.ext import (Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters)
+
+from provans import (
+    start, show_history, save_file,
+    clear_history, button_handler, text_handler
+)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 WEBHOOK_PATH = "/webhook"
-WEBHOOK_URL = f"https://<твій-домен-на-render>.onrender.com{WEBHOOK_PATH}"
+WEBHOOK_URL = "https://provansrb.onrender.com/webhook"
 PORT = int(os.environ.get("PORT", 5000))
 
 async def run():
@@ -232,9 +239,11 @@ async def run():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
 
     # Встановлюємо webhook
+    print(f"🚀 Встановлюємо Webhook: {WEBHOOK_URL}")
     await app.bot.set_webhook(WEBHOOK_URL)
 
-    print(f"🚀 Запускаємо Webhook на {WEBHOOK_URL}")
+    # Запускаємо сервер для прийому webhook
+    print(f"✅ Слухаємо на {WEBHOOK_PATH}, порт {PORT}")
     await app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
