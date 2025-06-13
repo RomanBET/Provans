@@ -216,6 +216,7 @@ async def save_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 import os
 import asyncio
+from aiohttp import web
 from telegram.ext import (Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters)
 
 from provans import (
@@ -228,27 +229,37 @@ WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = "https://provansrb.onrender.com/webhook"
 PORT = int(os.environ.get("PORT", 5000))
 
-async def run():
-    app = Application.builder().token(TOKEN).build()
+async def handler(request):
+    await application.update_queue.put(
+        await application.bot._parse_webhook_data(await request.read(), request.headers)
+    )
+    return web.Response()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("history", show_history))
-    app.add_handler(CommandHandler("save", save_file))
-    app.add_handler(CommandHandler("clear", clear_history))
-    app.add_handler(CallbackQueryHandler(button_handler))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
+async def run():
+    global application
+    application = Application.builder().token(TOKEN).build()
+
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("history", show_history))
+    application.add_handler(CommandHandler("save", save_file))
+    application.add_handler(CommandHandler("clear", clear_history))
+    application.add_handler(CallbackQueryHandler(button_handler))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
 
     # Встановлюємо webhook
     print(f"🚀 Встановлюємо Webhook: {WEBHOOK_URL}")
-    await app.bot.set_webhook(WEBHOOK_URL)
+    await application.bot.set_webhook(WEBHOOK_URL)
 
-    # Запускаємо сервер для прийому webhook
+    # Запускаємо aiohttp сервер
     print(f"✅ Слухаємо на {WEBHOOK_PATH}, порт {PORT}")
-    await app.run_webhook(
-    listen="0.0.0.0",
-    port=PORT,
-    path=WEBHOOK_PATH,
-)
+    app = web.Application()
+    app.router.add_post(WEBHOOK_PATH, handler)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", PORT)
+    await site.start()
 
 if __name__ == "__main__":
     asyncio.run(run())
+
