@@ -245,10 +245,10 @@ async def run():
     # Запускаємо сервер для прийому webhook
     print(f"✅ Слухаємо на {WEBHOOK_PATH}, порт {PORT}")
     await app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        webhook_path=WEBHOOK_PATH,
-    )
+    listen="0.0.0.0",
+    port=PORT,
+    path=WEBHOOK_PATH,
+)
 
 if __name__ == "__main__":
     asyncio.run(run())
