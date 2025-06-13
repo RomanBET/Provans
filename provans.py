@@ -216,7 +216,7 @@ async def save_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 import asyncio
 
-TOKEN = "7710499868:AAEWohyLXPTV1Nzptfp496BcvArFI_YBQp0"
+TOKEN = os.environ.get("BOT_TOKEN")
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://<твій-домен-на-render>.onrender.com{WEBHOOK_PATH}"
 PORT = int(os.environ.get("PORT", 5000))
