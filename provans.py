@@ -2,6 +2,9 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKe
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 import json, os
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+
 
 waiters = ["Анастасія", "Юліана", "Анна", "Вероніка", "Віталіна"]
 
@@ -13,9 +16,9 @@ menu = {
 }
 
 prices = {
-    "Маргарита": 120, "Пепероні": 140, "Гавайська": 130,
-    "Філадельфія": 150, "Каліфорнія": 135, "Дракон": 160,
-    "Кола": 40, "Фанта": 40, "Вода": 30,
+    "Маргарита": 175, "Пепероні": 185, "Гавайська": 190,
+    "Філадельфія": 150, "Каліфорнія": 135, "Дракон": 340,
+    "Кола": 50, "Фанта": 50, "Вода": 30,
     "Сирна тарілка": 110, "Оливки": 60, "Брускети": 90
 }
 
@@ -226,7 +229,8 @@ from provans import (
 
 TOKEN = os.environ.get("BOT_TOKEN")
 WEBHOOK_PATH = "/webhook"
-WEBHOOK_URL = "https://provansrb.onrender.com/webhook"
+WEBHOOK_URL = "https://web-production-ef63.up.railway.app/webhook"
+
 PORT = int(os.environ.get("PORT", 5000))
 
 async def handler(request):
