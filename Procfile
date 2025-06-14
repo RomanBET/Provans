@@ -1,1 +1,1 @@
-worker: python provans.py
+web: python provans.py
