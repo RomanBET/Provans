@@ -1,1 +1,1 @@
-web: python provans.py
+web: echo "Using Procfile"
