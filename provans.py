@@ -231,7 +231,7 @@ TOKEN = os.environ.get("BOT_TOKEN")
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = "https://web-production-ef63.up.railway.app/webhook"
 
-PORT = int(os.environ.get("PORT", 5000))
+PORT = int(os.environ.get("PORT"))
 
 async def handler(request):
     await application.update_queue.put(
